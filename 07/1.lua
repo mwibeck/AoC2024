@@ -1,41 +1,10 @@
 #!/usr/local/bin/lua
 
+dofile("../utils.lua")
 bc = require'bc'
 args = {...}
 
 local debug = tonumber(args[2] or 0)
-
-function table.map(t, f)
-   local tbl = {}
-   for i,j in pairs(t) do
-      tbl[i] = f(j)
-   end
-   return tbl
-end
-
-function table.zip(t1, t2)
-   local tbl = {}
-   local i=1
-   repeat
-      table.insert(tbl, t1[i])
-      table.insert(tbl, t2[i])
-      i = i + 1
-   until i <= #t1 and i <= #t2
-   return tbl
-end
-
-function table.zipmap(t1, t2, f1, f2)
-   local tbl = {}
-   local i=1
-   repeat
-      table.insert(tbl, f1(t1[i]))
-      table.insert(tbl, f2(t2[i]))
-      i = i + 1
-   until (i > #t1) and (i > #t2)
-   return tbl
-end
-
-local maxn = 0
 
 local data = {}
 for line in io.lines(args[1]) do
@@ -44,12 +13,8 @@ for line in io.lines(args[1]) do
    inp:gsub("(%d+)", function(d) table.insert(input, bc.new(d)) end)
    res = bc.new(res)
 
-   if #input > maxn then maxn = #input end
-  
    table.insert(data, {res=res, inp=input})
 end
-
-print(maxn)
 
 local function eval(res, inp, op)
    local curr = inp[1]
@@ -73,7 +38,7 @@ local function genops(n, len)
       x = bc.tonumber(x)
       if x == 0 then
 	 table.insert(ops, "*")
-      elseif x == 1 then
+      else
 	 table.insert(ops, "+")
       end
    end
